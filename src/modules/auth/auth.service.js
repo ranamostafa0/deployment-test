@@ -55,7 +55,6 @@ export const resenConfirmEmail = async (inputs) => {
         model: UserModel,
         filter: {
             email,
-            confirmEmail: { $exists: false },
             provider: providerEnum.System
 
         }
