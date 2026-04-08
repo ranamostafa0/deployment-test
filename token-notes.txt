@@ -1,0 +1,90 @@
+** Verify Token Flow => (based on role) ==>
+Role (User | Admin)
+        ↓
+Signature (User Secret | System Secret)
+        ↓
+Token Type (Access | Refresh)
+        ↓
+Verification (jwt.verify with correct secret)
+        ↓
+Fetch User from DB
+        ↓
+Authorization (check role allowed)
+
+---------------------------------------------------------------------------------------------------------------------
+(1) Login Flow (Getting Tokens) =>
+
+1- Client sends → email + password
+
+2- login()
+depends on → dbService.findOne() (to find user)
+depends on → compareHash() (to verify password)
+
+**If valid →
+3- calls → createLoginCredentials(user, issuer)
+depends on → getTokenSignature(user.role)
+depends on → generateToken() (access & refresh)
+
+==> Returns: access_token & refresh_token
+
+
+(2) Accessing Protected Route (Access Token Flow) =>      router.get("/", authorization([...]))
+1- Client sends → access token in headers
+
+==> authorization() middleware runs
+- depends on → decodeToken(token, access)
+
+==> decodeToken():
+- depends on → jwt.decode() (read audience)
+- checks → tokenType matches
+- depends on → getTokenSignatureLevel(audienceType)
+- depends on → getTokenSignature(role)
+- depends on → verifyToken() (correct secret)
+- depends on → findOne(UserModel) (fetch user from DB)
+
+==> Returns user
+
+==> authorization():
+- checks → role is allowed
+
+===> Controller runs (e.g. profile())
+
+-----------------------------------------------Dependency chain--------------------------------------------------------
+[1] Token Creation Dependency Chain =>
+
+createLoginCredentials
+    ↓
+getTokenSignature(role)
+    ↓
+generateToken(payload, secret, options)
+    ↓
+jwt.sign()
+
+
+[2] Token Verification Dependency Chain =>
+
+authentication / authorization
+    ↓
+decodeToken()
+    ↓
+jwt.decode()
+    ↓
+getTokenSignatureLevel()
+    ↓
+getTokenSignature()
+    ↓
+verifyToken()
+    ↓
+jwt.verify()
+    ↓
+find user in DB
+
+
+** Role-Based Secret Logic Dependency =>
+user.role
+    ↓
+getTokenSignature(role)
+    ↓
+choose:
+   - SYSTEM secrets (Admin)
+   - USER secrets (User)
