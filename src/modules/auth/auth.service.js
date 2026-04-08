@@ -88,7 +88,7 @@ export const confirmEmail = async (inputs) => {
         model: UserModel,
         filter: {
             email,
-            confirmEmail: { $eq: "null" },
+            confirmEmail: { $eq: null },
             provider: providerEnum.System
         }
     })
@@ -131,7 +131,7 @@ export const login = async (inputs, issuer) => {
 
     const user = await dbService.findOne({
         model: UserModel,
-        filter: { email, confirmEmail: { $ne: "null" } }
+        filter: { email, confirmEmail: { $ne: null } }
     })
     if (!user) {
         return NotFoundException({ message: "In-valid email not verified yet" })
