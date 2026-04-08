@@ -53,9 +53,11 @@ const userSchema = new mongoose.Schema({
         default: providerEnum.System,
     },
 
-    profilePicture: String,
-    coverPicture: [String],
-    gallery: [String],
+    // profilePicture: String,
+    // coverPicture: [String],
+    // gallery: [String],
+    profilePicture: { public_id: String, secure_url: String },
+    coverPicture: [{ public_id: String, secure_url: String }],
 
     profileVisits: {
         type: Number,

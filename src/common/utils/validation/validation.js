@@ -55,7 +55,7 @@ export const generalValidationFields = {
                 originalname: joi.string(),
                 encoding: joi.string(),
                 mimetype: joi.string().valid(...mimetype),
-                finalPath: joi.string().required(),
+                // finalPath: joi.string().required(),
                 destination: joi.string(),
                 filename: joi.string(),
                 path: joi.string(),
