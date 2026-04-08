@@ -74,47 +74,47 @@ export const sharedProfile = async (userId, loggedInUser) => {
 
 
 // Application-name/users/userId
-// export const profilePicture = async (file, user) => {
-//     if (user.profilePicture?.public_id) {
-//         await deleteFile(user.profilePicture.public_id)
-//     }
-//     const { secure_url, public_id } = await uploadFile({ file, folder: `users/${user._id}` })
-//     user.profilePicture = { secure_url, public_id }
-//     await user.save()
-//     return user
-// }
+export const profilePicture = async (file, user) => {
+    if (user.profilePicture?.public_id) {
+        await deleteFile(user.profilePicture.public_id)
+    }
+    const { secure_url, public_id } = await uploadFile({ file, folder: `users/${user._id}` })
+    user.profilePicture = { secure_url, public_id }
+    await user.save()
+    return user
+}
 
 
-// export const coverPicture = async (files, user) => {
-//     if (user.coverPicture?.length) {
-//         await deleteFilesByPublicIds(user.coverPicture.map((picture) => picture.public_id))   //[public_ids]
-//     }
-//     user.coverPicture = await uploadFiles({ files, folder: `users/${user._id}/coverPictures` })
-//     await user.save()
-//     return user
-// }
+export const coverPicture = async (files, user) => {
+    if (user.coverPicture?.length) {
+        await deleteFilesByPublicIds(user.coverPicture.map((picture) => picture.public_id))   //[public_ids]
+    }
+    user.coverPicture = await uploadFiles({ files, folder: `users/${user._id}/coverPictures` })
+    await user.save()
+    return user
+}
 
 
-// EROFS: read - only file system
+////////// EROFS: read - only file system
 //  — Vercel's serverless functions run in a read-only filesystem. You cannot write files to disk at all. Only /tmp is writable,
 //   but it's limited to 50MB and is wiped between invocations.
 
-export const profilePicture = async (file, user) => {
-    // if (user.profilePicture) {
-    //     const oldPath = resolve(user.profilePicture);
-    //     if (fs.existsSync(oldPath)) fs.unlinkSync(oldPath);
-    // }
+// export const profilePicture = async (file, user) => {
+//     // if (user.profilePicture) {
+//     //     const oldPath = resolve(user.profilePicture);
+//     //     if (fs.existsSync(oldPath)) fs.unlinkSync(oldPath);
+//     // }
 
-    // move old image to gallery
-    if (user.profilePicture) {
-        user.gallery.push(user.profilePicture);
-    }
+//     // move old image to gallery
+//     if (user.profilePicture) {
+//         user.gallery.push(user.profilePicture);
+//     }
 
-    // save the new one as current profile picture
-    user.profilePicture = file.finalPath
-    await user.save();
-    return user;
-}
+//     // save the new one as current profile picture
+//     user.profilePicture = file.finalPath
+//     await user.save();
+//     return user;
+// }
 
 export const removeProfilePicture = async (user) => {
 
@@ -138,34 +138,34 @@ export const removeProfilePicture = async (user) => {
 //     return user
 // }
 
-export const coverPicture = async (files, user) => {
-    console.log({ files })
-    if (!files || !files.length)
-        throw BadRequestException({ message: "Files are required" });
+// export const coverPicture = async (files, user) => {
+//     console.log({ files })
+//     if (!files || !files.length)
+//         throw BadRequestException({ message: "Files are required" });
 
-    const existingCovers = user.coverPicture?.length || 0;
-    const newCovers = files.length;
-    console.log({ existingCovers })
-    console.log({ newCovers })
-
-
-    const total = existingCovers + newCovers;
-
-    if (total !== 2) {
-        throw BadRequestException({ message: "Total cover pictures must be exactly 2" });
-    }
+//     const existingCovers = user.coverPicture?.length || 0;
+//     const newCovers = files.length;
+//     console.log({ existingCovers })
+//     console.log({ newCovers })
 
 
-    const newPaths = files.map(file => file.finalPath);
+//     const total = existingCovers + newCovers;
 
-    user.coverPicture = [
-        ...(user.coverPicture || []),
-        ...newPaths
-    ];
+//     if (total !== 2) {
+//         throw BadRequestException({ message: "Total cover pictures must be exactly 2" });
+//     }
 
-    await user.save();
-    return user;
-}
+
+//     const newPaths = files.map(file => file.finalPath);
+
+//     user.coverPicture = [
+//         ...(user.coverPicture || []),
+//         ...newPaths
+//     ];
+
+//     await user.save();
+//     return user;
+// }
 
 export const createRevokeToken = async ({ userId, jti, ttl }) => {
     return await set({

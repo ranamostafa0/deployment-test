@@ -12,7 +12,7 @@ async function bootstrap() {
     const app = express()
     //convert buffer data
     app.use(cors(), express.json())
-    // app.use('/upload', express.static(resolve('./upload')))
+    app.use('/upload', express.static(resolve('./upload')))
 
     // DB
     await authenticateDB()

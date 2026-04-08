@@ -1,5 +1,5 @@
 import { Router } from "express";
-import {  coverPicture, deleteProfile, logout, profile, profilePicture, removeProfilePicture, rotateToken, sharedProfile } from "./user.service.js";
+import { coverPicture, deleteProfile, logout, profile, profilePicture, removeProfilePicture, rotateToken, sharedProfile } from "./user.service.js";
 import { successResponse } from "../../common/utils/response/success.response.js";
 import { authentication, authorization } from "../../middleware/auth.middlware.js";
 import { TokenTypeEnum } from "../../common/enum/security.enum.js";
@@ -41,39 +41,39 @@ router.get('/:userId/shared-profile', async (req, res, next) => {
         return successResponse({ res, data: result })
     })
 
-// router.patch('/profile-picture', authentication(), cloudUpload([...fieldValidation.image], 10).single("attachment"),
-//     validation(validators.profilePicture)
-//     , async (req, res, next) => {
-//         const account = await profilePicture(req.file, req.user)
-//         return successResponse({ res, data: { account } })
-//     })
-
-// router.patch('/cover-picture', authentication(), cloudUpload([...fieldValidation.image], 10).array("coverPicture", 2),
-//     validation(validators.coverPicture)
-//     , async (req, res, next) => {
-//         const account = await coverPicture(req.files, req.user)
-//         return successResponse({ res, data: { account } })
-//     })
-
-router.patch('/profile-picture', authentication(), upload("user/image", [...fieldValidation.image], 10).single("attachment"),
+router.patch('/profile-picture', authentication(), cloudUpload([...fieldValidation.image], 10).single("attachment"),
     validation(validators.profilePicture)
     , async (req, res, next) => {
-        console.log({ file: req.file })
         const account = await profilePicture(req.file, req.user)
         return successResponse({ res, data: { account } })
     })
+
+router.patch('/cover-picture', authentication(), cloudUpload([...fieldValidation.image], 10).array("coverPicture", 2),
+    validation(validators.coverPicture)
+    , async (req, res, next) => {
+        const account = await coverPicture(req.files, req.user)
+        return successResponse({ res, data: { account } })
+    })
+
+// router.patch('/profile-picture', authentication(), upload("user/image", [...fieldValidation.image], 10).single("attachment"),
+//     validation(validators.profilePicture)
+//     , async (req, res, next) => {
+//         console.log({ file: req.file })
+//         const account = await profilePicture(req.file, req.user)
+//         return successResponse({ res, data: { account } })
+//     })
 
 router.delete('/profile-picture', authentication(), async (req, res, next) => {
     const account = await removeProfilePicture(req.user);
     return successResponse({ res, message: "Profile picture removed", data: { account } });
 })
 
-router.patch('/cover-picture', authentication(), upload("user/cover", [...fieldValidation.image], 10).array("coverPicture", 2),
-    validation(validators.coverPicture)
-    , async (req, res, next) => {
-        const account = await coverPicture(req.files, req.user)
-        return successResponse({ res, data: { account } })
-    })
+// router.patch('/cover-picture', authentication(), upload("user/cover", [...fieldValidation.image], 10).array("coverPicture", 2),
+//     validation(validators.coverPicture)
+//     , async (req, res, next) => {
+//         const account = await coverPicture(req.files, req.user)
+//         return successResponse({ res, data: { account } })
+//     })
 
 
 router.post('/logout', authentication(), async (req, res, next) => {
