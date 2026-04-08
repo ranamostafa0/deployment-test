@@ -51,16 +51,28 @@ export const signup = async (inputs) => {
 export const resenConfirmEmail = async (inputs) => {
     const { email } = inputs
 
+    // const account = await dbService.findOne({
+    //     model: UserModel,
+    //     filter: {
+    //         email,
+    //         provider: providerEnum.System
+
+    //     }
+    // })
+    // if (!account) {
+    //     return NotFoundException({ message: "Account not found or already verified" })
+    // }
     const account = await dbService.findOne({
         model: UserModel,
-        filter: {
-            email,
-            provider: providerEnum.System
-
-        }
+        filter: { email, provider: providerEnum.System }
     })
+
     if (!account) {
-        return NotFoundException({ message: "Account not found or already verified" })
+        return NotFoundException({ message: "Account not found" })
+    }
+
+    if (account.confirmEmail !== null) {
+        return ConflictException({ message: "Email already verified" }) // ✅ clearer
     }
 
     const otpTTL = await ttl(`OTP::USER::${email}`)

@@ -95,6 +95,10 @@ export const sharedProfile = async (userId, loggedInUser) => {
 // }
 
 
+// EROFS: read - only file system
+//  — Vercel's serverless functions run in a read-only filesystem. You cannot write files to disk at all. Only /tmp is writable,
+//   but it's limited to 50MB and is wiped between invocations.
+
 export const profilePicture = async (file, user) => {
     // if (user.profilePicture) {
     //     const oldPath = resolve(user.profilePicture);
